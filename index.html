@@ -520,8 +520,8 @@ function update(dt){
   for(let tx=l;tx<=r;tx++)for(let ty=t0;ty<=t1;ty++)if(tileAt(tx,ty)===3&&p.y+p.h>ty*T+12){hurt(p.vx>=0?-1:1);p.vy=-300}
 
   const pcx=p.x+p.w/2,pcy=p.y+p.h/2;
-  for(const g of lv.shells)if(!g.taken&&Math.abs(g.x-pcx)<22&&Math.abs(g.y-pcy)<24){g.taken=true;p.shells++;sfx('shell');burst(g.x,g.y,'#FFB08A',6,90);updateHUD()}
-  for(const g of lv.pearls)if(!g.taken&&Math.abs(g.x-pcx)<24&&Math.abs(g.y-pcy)<26){g.taken=true;p.pearls++;sfx('pearl');burst(g.x,g.y,'#EAF8FF',16,170);updateHUD();toast('Pearl found. '+p.pearls+' of 3',2)}
+  for(const g of lv.shells)if(!g.taken&&Math.abs(g.x-pcx)<24&&Math.abs(g.y-pcy)<36){g.taken=true;p.shells++;sfx('shell');burst(g.x,g.y,'#FFB08A',6,90);updateHUD()}
+  for(const g of lv.pearls)if(!g.taken&&Math.abs(g.x-pcx)<26&&Math.abs(g.y-pcy)<36){g.taken=true;p.pearls++;sfx('pearl');burst(g.x,g.y,'#EAF8FF',16,170);updateHUD();toast('Pearl found. '+p.pearls+' of 3',2)}
   for(const c of lv.checks)if(!c.on&&pcx>c.x-14&&Math.abs(pcy-(c.y-24))<70){c.on=true;p.respawn={x:c.x-p.w/2,y:c.y-p.h-2};sfx('check');bubbles(c.x,c.y-40,10);toast('Checkpoint set',1.6)}
 
   // enemies
@@ -571,7 +571,7 @@ function update(dt){
 
   // goal
   const gl=lv.goal;
-  if(gl&&gl.active&&!gl.open&&overlap(p,{x:gl.x,y:gl.y-20,w:gl.w,h:gl.h+20})){
+  if(gl&&gl.active&&!gl.open&&p.x+p.w>gl.x&&p.x<gl.x+gl.w){
     gl.open=true;state='win';timers.win=1.4;sfx('win');burst(gl.x+23,gl.y,'#FFC857',40,260);$('hud').hidden=true;$('bossbar').hidden=true;
   }
   if(timers.hud==null||(timers.hud-=dt)<=0){timers.hud=.25;$('hud-time').textContent=fmt(lvTime)}

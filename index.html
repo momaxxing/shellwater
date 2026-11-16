@@ -20,7 +20,7 @@
 html,body{height:100%}
 [hidden]{display:none!important}
 body{margin:0;background:var(--abyss);color:var(--foam);font-family:var(--body);font-size:16px;line-height:1.45}
-.wrap{min-height:100%;box-sizing:border-box;padding-inline:16px;padding-block:20px 28px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.wrap{min-height:100%;box-sizing:border-box;padding-inline:16px;padding-block:20px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
 .stage{position:relative;width:min(100%,1280px);width:min(100%, calc((100dvh - 150px) * 960 / 544), 1280px);min-width:0;border-radius:18px;overflow:hidden;background:var(--deep);box-shadow:0 0 0 1px var(--line),0 30px 80px -30px rgba(0,0,0,.8)}
 .inner{position:absolute;left:0;top:0;width:960px;height:544px;transform-origin:0 0}
 canvas#game{position:absolute;inset:0;width:960px;height:544px;display:block}
@@ -121,6 +121,16 @@ kbd{display:inline-block;min-width:22px;padding:1px 7px;margin-right:4px;border-
 .rotate{display:none;margin:0;font-size:14px;color:var(--gold)}
 @media (pointer:coarse){.touch{display:flex}.help{display:none}}
 @media (pointer:coarse) and (orientation:portrait){.rotate{display:block}}
+/* phones held sideways: controls sit beside the stage so the game gets the full height */
+@media (pointer:coarse) and (orientation:landscape) and (max-height:600px){
+  .wrap{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:end;align-content:center;column-gap:10px;padding-block:8px;padding-inline:max(10px,env(safe-area-inset-left)) max(10px,env(safe-area-inset-right))}
+  .stage{grid-column:2;grid-row:1;align-self:center;justify-self:center;width:min(100%,calc((100dvh - 16px) * 960 / 544),1280px)}
+  .touch{display:contents}
+  .pad{grid-column:1;grid-row:1;gap:8px;padding-bottom:6px}
+  .tbtn.jump{grid-column:3;grid-row:1;margin-bottom:6px}
+  .tbtn{width:64px;height:64px;border-radius:18px}
+  .tbtn.jump{width:88px}
+}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -820,7 +830,7 @@ function showMaker(ret){makeReturn=ret;state='make';if(!lv||lvIndex!==0)loadLeve
 function pause(){if(state!=='play'||p.dead)return;state='paused';show('scr-pause')}
 function resume(){if(state!=='paused')return;state='play';show(null);last=performance.now();if(document.activeElement)document.activeElement.blur()}
 
-$('btn-play').onclick=()=>{sfx('check');if(!save.made)showMaker('map');else showMap()};
+$('btn-play').onclick=()=>{sfx('check');if(save.unlocked<=1&&!Object.keys(save.best).length)startLevel(0);else showMap()};
 $('btn-make').onclick=()=>showMaker('title');
 $('btn-map-make').onclick=()=>showMaker('map');
 $('btn-make-done').onclick=()=>{save.made=true;persist();syncTitle();sfx('check');showMap()};
